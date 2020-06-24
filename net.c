@@ -28,6 +28,10 @@
 #include "net.h"
 #include "strl.h"
 
+#ifdef __OpenBSD__
+#include <errno.h>
+#endif
+
 #ifdef WIN32
 #define socklen_t int
 #endif
@@ -319,7 +323,11 @@ int Net_RecvTotal(void) {
 //---------------------------------
 // time code 
 
+#ifdef __OpenBSD__
+#include <sys/time.h>
+#else
 #include <sys/timeb.h>
+#endif
 
 int start_sec;
 int start_msec;

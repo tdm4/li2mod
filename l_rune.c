@@ -198,10 +198,14 @@ edict_t *Rune_Spawn(vec3_t origin, int type) {
 	else if(type & RUNE_STRENGTH)
 		rune->s.renderfx = RF_SHELL_RED;
 	else if(type & RUNE_HASTE) {
+		#ifndef __OpenBSD__
 		if(qver >= 3.19f)
 			rune->s.renderfx = RF_SHELL_DOUBLE;
 		else
 			rune->s.renderfx = RF_SHELL_RED | RF_SHELL_GREEN;
+		#else
+		rune->s.renderfx = RF_SHELL_DOUBLE;
+		#endif
 	}
 	else if(type & RUNE_REGEN)
 		rune->s.renderfx = RF_SHELL_GREEN;

@@ -84,7 +84,9 @@ lvar_t *def_boardshow;
 
 cvar_t *first;
 
+#ifndef __OpenBSD__
 float qver;
+#endif
 
 void Lithium_InitGame(void) {
 
@@ -94,7 +96,9 @@ void Lithium_InitGame(void) {
 		snprintf(lithium_version, sizeof(lithium_version), "%1.2f-beta%d", lithium_ver, lithium_beta);
 	snprintf(lithium_modname, sizeof(lithium_modname), "Lithium II Mod v%s", lithium_version);
 
+	#ifndef __OpenBSD__
 	sscanf(gi.cvar("version", 0, 0)->string, "%f", &qver);
+	#endif
 
 	ofp_base = lvar("ofp_base", "20", "##", VAR_NONE);
 	ofp_perplayer = lvar("ofp_perplayer", "0.75", "#.##", VAR_NONE);
@@ -1424,10 +1428,14 @@ void Lithium_SetClientEffects(edict_t *ent) {
 		return;
 	if(ent->safety_time) {
 		ent->s.effects |= EF_COLOR_SHELL;
+		#ifndef __OpenBSD__
 		if(qver >= 3.19f)
 			ent->s.renderfx = RF_SHELL_DOUBLE;
 		else
 			ent->s.renderfx = RF_SHELL_RED | RF_SHELL_GREEN;
+		#else
+		ent->s.renderfx = RF_SHELL_DOUBLE;
+		#endif
 	}
 }
 
@@ -1714,7 +1722,11 @@ char *file_gamedir(char *name) {
 		strlcpy(gdir, gi.cvar("gamedir", "", 0)->string, sizeof(gdir));
 		if(!strlen(gdir))
 			strlcpy(gdir, "baseq2", sizeof(gdir));
+#ifdef __OpenBSD__
+		snprintf(file_gamedir_buffer, sizeof(file_gamedir_buffer), "/usr/local/share/yquake2/%s/%s", gdir, name);
+#else
 		snprintf(file_gamedir_buffer, sizeof(file_gamedir_buffer), "%s/%s", gdir, name);
+#endif
 	}
 
 	return file_gamedir_buffer;
